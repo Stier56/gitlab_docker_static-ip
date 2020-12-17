@@ -1,0 +1,31 @@
+version: '3'
+ 
+services:
+  web:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    hostname: $HOSTNAME
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://hogehoge'
+        # Add any other gitlab.rb configuration here, each on its own line
+    volumes:
+      - '$GITLAB_HOME/config:/etc/gitlab'
+      - '$GITLAB_HOME/logs:/var/log/gitlab'
+      - '$GITLAB_HOME/data:/var/opt/gitlab'
+    networks: 
+      container_net:
+        ipv4_address: $IP_ADDRESS
+    
+ 
+networks: 
+  container_net:
+    driver: macvlan
+    driver_opts: 
+      parent: $NETWORK_INTERFACE
+    ipam: 
+      driver: default
+      config: 
+        - subnet: $SUBNET
+          ip_range: $IP_RANGE
+          gateway: $GATEWAY
